@@ -1,0 +1,20 @@
+services:
+  aspnetapp:
+    image: mcr.microsoft.com/dotnet/samples:aspnetapp
+    container_name: dotnet-sample
+    ports:
+      - "8080:8080"
+    networks:
+      - traefik
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dotnet-sample.rule=Host(`dotnet-sample.gonk.wtf`)"
+      - "traefik.http.routers.dotnet-sample.entrypoints=http,https"
+      - "traefik.http.routers.dotnet-sample.tls=true"
+      - "traefik.http.routers.dotnet-sample.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.dotnet-sample.tls.certresolver=cloudflare"
+      - "traefik.http.services.dotnet-sample.loadbalancer.server.port=8080"
+networks:
+  traefik:
+    external: true

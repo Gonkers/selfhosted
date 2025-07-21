@@ -1,0 +1,23 @@
+services:
+  traefik:
+    image: docker.io/library/traefik:v3
+    container_name: traefik
+    volumes:
+      - /run/docker.sock:/run/docker.sock:ro
+      - ./config.yaml:/etc/traefik/traefik.yaml:ro
+      - ./certs/:/var/traefik/certs/:rw
+    environment:
+      - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
+    networks:
+      public:
+        ipv4_address: 172.23.4.42
+      traefik:
+    restart: unless-stopped
+
+networks:
+
+  public:
+    external: true
+
+  traefik:
+    external: true

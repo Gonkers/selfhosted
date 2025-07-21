@@ -1,0 +1,24 @@
+# Logs
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+*.env
+.env.*
+docker-compose.override.yml
+
+# Build output
+dist/
+build/
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+
+# Misc
+*.bak
+*.tmp

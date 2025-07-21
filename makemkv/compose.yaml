@@ -1,0 +1,52 @@
+services:
+  makemkv-1:
+    image: docker.io/jlesage/makemkv
+    container_name: makemkv1
+    environment:
+      - TZ=America/New_York
+      - USER_ID=950
+      - GROUP_ID=950
+    networks:
+      - traefik
+    volumes:
+      - "./config1:/config:rw"
+      - "./rips:/output:rw"
+    devices:
+      - "/dev/sr0:/dev/sr0"
+      - "/dev/sg2:/dev/sg2"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.makemkv1.rule=Host(`makemkv1.gonk.wtf`)"
+      - "traefik.http.routers.makemkv1.entrypoints=http,https"
+      - "traefik.http.routers.makemkv1.tls=true"
+      - "traefik.http.routers.makemkv1.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.makemkv1.tls.certresolver=cloudflare"
+      - "traefik.http.services.makemkv1.loadbalancer.server.port=5800"
+  makemkv-2:
+    image: docker.io/jlesage/makemkv
+    container_name: makemkv2
+    environment:
+      - TZ=America/New_York
+      - USER_ID=950
+      - GROUP_ID=950
+    networks:
+      - traefik
+    volumes:
+      - "./config2:/config:rw"
+      - "./rips:/output:rw"
+    devices:
+      - "/dev/sr1:/dev/sr1"
+      - "/dev/sg3:/dev/sg3"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.makemkv2.rule=Host(`makemkv2.gonk.wtf`)"
+      - "traefik.http.routers.makemkv2.entrypoints=http,https"
+      - "traefik.http.routers.makemkv2.tls=true"
+      - "traefik.http.routers.makemkv2.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.makemkv2.tls.certresolver=cloudflare"
+      - "traefik.http.services.makemkv2.loadbalancer.server.port=5800"
+networks:
+  traefik:
+    external: true
