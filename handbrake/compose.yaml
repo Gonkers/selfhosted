@@ -1,0 +1,146 @@
+services:
+  handbrake-1:
+    image: docker.io/jlesage/handbrake
+    container_name: handbrake1
+    environment:
+      - TZ=America/New_York
+      - USER_ID=950
+      - GROUP_ID=950
+      - VNC_LISTENING_PORT=-1
+      - DISPLAY_WIDTH=1280
+      - DISPLAY_HEIGHT=720
+      - AUTOMATED_CONVERSION_PRESET=gonkers/H265 4K Intel
+      - AUTOMATED_CONVERSION_FORMAT=mkv
+    networks:
+      - traefik
+    volumes:
+      - "./presets.json:/config/ghb/presets.json:rw"
+      - "./config1:/config:rw"
+      - "./output:/output:rw"
+      - "./video:/storage:ro"
+      - "./watch1:/watch:rw"
+    devices:
+      - "/dev/dri/renderD128:/dev/dri/renderD128"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.handbrake1.rule=Host(`handbrake1.gonk.wtf`)"
+      - "traefik.http.routers.handbrake1.entrypoints=http,https"
+      - "traefik.http.routers.handbrake1.tls=true"
+      - "traefik.http.routers.handbrake1.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.handbrake1.tls.certresolver=cloudflare"
+      - "traefik.http.services.handbrake1.loadbalancer.server.port=5800"
+
+  handbrake-2:
+    image: docker.io/jlesage/handbrake
+    container_name: handbrake2
+    environment:
+      - TZ=America/New_York
+      - USER_ID=950
+      - GROUP_ID=950
+      - VNC_LISTENING_PORT=-1
+      - DISPLAY_WIDTH=1280
+      - DISPLAY_HEIGHT=720
+      - AUTOMATED_CONVERSION_PRESET=gonkers/H265 4K Intel
+      - AUTOMATED_CONVERSION_FORMAT=mkv
+    networks:
+      - traefik
+    volumes:
+      - "./presets.json:/config/ghb/presets.json:rw"
+      - "./config2:/config:rw"
+      - "./output:/output:rw"
+      - "./video:/storage:ro"
+      - "./watch2:/watch:rw"
+    devices:
+      - "/dev/dri/renderD128:/dev/dri/renderD128"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.handbrake2.rule=Host(`handbrake2.gonk.wtf`)"
+      - "traefik.http.routers.handbrake2.entrypoints=http,https"
+      - "traefik.http.routers.handbrake2.tls=true"
+      - "traefik.http.routers.handbrake2.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.handbrake2.tls.certresolver=cloudflare"
+      - "traefik.http.services.handbrake2.loadbalancer.server.port=5800"
+
+  handbrake-3:
+    image: docker.io/jlesage/handbrake
+    container_name: handbrake3
+    environment:
+      - TZ=America/New_York
+      - USER_ID=950
+      - GROUP_ID=950
+      - VNC_LISTENING_PORT=-1
+      - DISPLAY_WIDTH=1280
+      - DISPLAY_HEIGHT=720
+      - AUTOMATED_CONVERSION_PRESET=gonkers/H265 4K Intel
+      - AUTOMATED_CONVERSION_FORMAT=mkv
+    networks:
+      - traefik
+    volumes:
+      - "./presets.json:/config/ghb/presets.json:rw"
+      - "./config3:/config:rw"
+      - "./output:/output:rw"
+      - "./video:/storage:ro"
+      - "./watch3:/watch:rw"
+    devices:
+      - "/dev/dri/renderD128:/dev/dri/renderD128"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.handbrake3.rule=Host(`handbrake3.gonk.wtf`)"
+      - "traefik.http.routers.handbrake3.entrypoints=http,https"
+      - "traefik.http.routers.handbrake3.tls=true"
+      - "traefik.http.routers.handbrake3.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.handbrake3.tls.certresolver=cloudflare"
+      - "traefik.http.services.handbrake3.loadbalancer.server.port=5800"
+
+  handbrake-4:
+    image: docker.io/jlesage/handbrake
+    container_name: handbrake4
+    environment:
+      - TZ=America/New_York
+      - USER_ID=950
+      - GROUP_ID=950
+      - VNC_LISTENING_PORT=-1
+      - DISPLAY_WIDTH=1280
+      - DISPLAY_HEIGHT=720
+      - AUTOMATED_CONVERSION_PRESET=gonkers/H265 4K Intel
+      - AUTOMATED_CONVERSION_FORMAT=mkv
+    networks:
+      - traefik
+    volumes:
+      - "./presets.json:/config/ghb/presets.json:rw"
+      - "./config4:/config:rw"
+      - "./output:/output:rw"
+      - "./video:/storage:ro"
+      - "./watch4:/watch:rw"
+    devices:
+      - "/dev/dri/renderD128:/dev/dri/renderD128"
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.handbrake4.rule=Host(`handbrake4.gonk.wtf`)"
+      - "traefik.http.routers.handbrake4.entrypoints=http,https"
+      - "traefik.http.routers.handbrake4.tls=true"
+      - "traefik.http.routers.handbrake4.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.handbrake4.tls.certresolver=cloudflare"
+      - "traefik.http.services.handbrake4.loadbalancer.server.port=5800"
+
+networks:
+  traefik:
+    external: true
+
+
+
+
+
+
+
+
+
+
+
+
+
+
