@@ -1,0 +1,43 @@
+services:
+  handbrake-server:
+    image: ghcr.io/thenickoftime/handbrake-web-server:latest
+    container_name: handbrake-web-server
+    user: 950:950
+    volumes:
+      # - ./config.yaml:/data/config.yaml:ro
+      - ./data:/data:rw
+      - ./video:/video:rw
+    networks:
+      - traefik
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.handbrake-web.rule=Host(`handbrake.gonk.wtf`)"
+      - "traefik.http.routers.handbrake-web.entrypoints=http,https"
+      - "traefik.http.routers.handbrake-web.tls=true"
+      - "traefik.http.routers.handbrake-web.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.handbrake-web.tls.certresolver=cloudflare"
+      - "traefik.http.services.handbrake-web.loadbalancer.server.port=9999"
+
+  handbrake-worker-1:
+    image: ghcr.io/thenickoftime/handbrake-web-worker:latest
+    container_name: handbrake-web-worker-1
+    user: 950:950
+    environment:
+      - WORKER_ID=handbrake-worker-1
+      - SERVER_URL=handbrake-server
+      - SERVER_PORT=9999
+    volumes:
+      - ./video:/video:rw
+    devices:
+      - "/dev/dri/renderD128:/dev/dri/renderD128"
+    depends_on:
+      - handbrake-server
+    networks:
+      - traefik
+    restart: unless-stopped
+
+networks:
+  traefik:
+    external: true
+

@@ -38,7 +38,6 @@ docker network create traefik
    ![TrueNAS Apps YAML Install](docs/img/truenas_apps_yaml_install.png)
 
 ## Traefik
-
 Docker compose will automatically read in `.env` files for variable substitution. Once this
 repo is cloned onto the server, create a `.env` file with your Cloudflare API key.
 ```shell
@@ -58,3 +57,26 @@ On my server the optical drives are assigned to these file handles.
 
 If you copy this, make sure to validate the `USER_ID` and `GROUP_ID` environment variables
 values match your `truenas_admin` IDs
+
+## Handbrake
+My Intel GPU can handle 4 transcodes at once, so we have 4 instances setup. To pass the GPU
+to the containers make sure you are passing the correct device. 
+```yaml
+    devices:
+      - "/dev/dri/renderD128:/dev/dri/renderD128"
+```
+
+If you copy this, make sure to validate the `USER_ID` and `GROUP_ID` environment variables
+values match your `truenas_admin` IDs
+
+## ~~Handbrake-web~~
+
+This project shows some promise, but meh...
+
+Pros
+ - Distributed work
+
+ Cons
+ - Outdated https://github.com/TheNickOfTime/handbrake-web/issues/337
+ - Unable to actually see which tracks or captions are chosen like you can in the real UI.
+
