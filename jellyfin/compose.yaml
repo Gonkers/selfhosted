@@ -1,0 +1,27 @@
+services:
+  jellyfin:
+    image: docker.io/jellyfin/jellyfin
+    container_name: jellyfin
+    user: 950:950
+    networks:
+      - traefik
+    volumes:
+      - ./config:/config:rw
+      - ./cache:/cache:rw
+      - ./video:/video:ro
+      # Optional - extra fonts to be used during transcoding with subtitle burn-in
+      # - ./fonts:/usr/local/share/fonts/custom:ro
+    restart: 'unless-stopped'
+    environment:
+      - JELLYFIN_PublishedServerUrl=https://jellyfin.gonk.wtf
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.gonk.wtf`)"
+      - "traefik.http.routers.jellyfin.entrypoints=http,https"
+      - "traefik.http.routers.jellyfin.tls=true"
+      - "traefik.http.routers.jellyfin.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.jellyfin.tls.certresolver=cloudflare"
+      - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+networks:
+  traefik:
+    external: true
