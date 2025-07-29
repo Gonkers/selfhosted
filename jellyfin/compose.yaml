@@ -8,7 +8,7 @@ services:
     volumes:
       - ./config:/config:rw
       - ./cache:/cache:rw
-      - ./video:/video:ro
+      - /mnt/stronghold/video:/video:ro
       # Optional - extra fonts to be used during transcoding with subtitle burn-in
       # - ./fonts:/usr/local/share/fonts/custom:ro
     restart: 'unless-stopped'
