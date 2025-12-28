@@ -32,8 +32,8 @@ services:
     networks:
       - dns
     volumes:
-      - ./data/adguard/work:/opt/adguardhome/work
-      - ./AdGuardHome.yaml:/opt/adguardhome/conf/AdGuardHome.yaml:ro
+      - ./data:/opt/adguardhome/work
+      - ./conf:/opt/adguardhome/conf
 
     restart: unless-stopped
 
