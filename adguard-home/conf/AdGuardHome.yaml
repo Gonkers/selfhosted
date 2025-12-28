@@ -6,7 +6,7 @@ http:
   session_ttl: 720h
 users:
   - name: gonkadmin
-    password: $2a$12$zk6s0N.PMH7JPU5Ep1xNh.rDwlMaAG.NKGdFWGfIvvES1/aIGdK5W
+    password: $2a$16$AXjvoNZ504idGsfvvhq.6.XsBZz0DZRKeIt0eO/jRGoivRtBu0wla
 auth_attempts: 5
 block_auth_min: 15
 http_proxy: ""
@@ -40,10 +40,13 @@ dns:
   trusted_proxies:
     - 127.0.0.0/8
     - ::1/128
+  cache_enabled: true
   cache_size: 4194304
   cache_ttl_min: 0
   cache_ttl_max: 0
   cache_optimistic: true
+  cache_optimistic_answer_ttl: 30s
+  cache_optimistic_max_age: 12h
   bogus_nxdomain: []
   aaaa_disabled: false
   enable_dnssec: true
@@ -67,6 +70,8 @@ dns:
   use_http3_upstreams: false
   serve_plain_dns: true
   hostsfile_enabled: true
+  pending_requests:
+    enabled: true
 tls:
   enabled: false
   server_name: ""
@@ -134,6 +139,7 @@ filtering:
     enabled: false
     bing: true
     duckduckgo: true
+    ecosia: true
     google: true
     pixabay: true
     yandex: true
@@ -142,6 +148,8 @@ filtering:
   parental_block_host: family-block.dns.adguard.com
   safebrowsing_block_host: standard-block.dns.adguard.com
   rewrites: []
+  safe_fs_patterns:
+    - /opt/adguardhome/work/data/userfilters/*
   safebrowsing_cache_size: 1048576
   safesearch_cache_size: 1048576
   parental_cache_size: 1048576
@@ -149,6 +157,7 @@ filtering:
   filters_update_interval: 12
   blocked_response_ttl: 10
   filtering_enabled: true
+  rewrites_enabled: true
   parental_enabled: false
   safebrowsing_enabled: false
   protection_enabled: true
@@ -173,4 +182,4 @@ os:
   group: ""
   user: ""
   rlimit_nofile: 0
-schema_version: 28
+schema_version: 32
