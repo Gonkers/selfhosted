@@ -15,3 +15,6 @@ services:
       - "traefik.http.routers.applogs.tls.domains[0].main=*.gonk.wtf"
       - "traefik.http.routers.applogs.tls.certresolver=cloudflare"
       - "traefik.http.services.applogs.loadbalancer.server.port=8080"
+networks:
+  traefik:
+    external: true
