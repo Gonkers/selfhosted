@@ -1,0 +1,17 @@
+services:
+  dozzle:
+    image: amir20/dozzle:latest
+    container_name: dozzle
+    networks:
+      - traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.applogs.rule=Host(`applogs.gonk.wtf`)"
+      - "traefik.http.routers.applogs.entrypoints=http,https"
+      - "traefik.http.routers.applogs.tls=true"
+      - "traefik.http.routers.applogs.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.applogs.tls.certresolver=cloudflare"
+      - "traefik.http.services.applogs.loadbalancer.server.port=8080"
