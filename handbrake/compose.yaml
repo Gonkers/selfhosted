@@ -17,7 +17,7 @@ services:
       - "./presets.json:/config/ghb/presets.json:rw"
       - "./config1:/config:rw"
       - "./output:/output:rw"
-      - "./video:/storage:ro"
+      - "./rips:/storage:ro"
       - "./watch1:/watch:rw"
     devices:
       - "/dev/dri/renderD128:/dev/dri/renderD128"
@@ -49,7 +49,7 @@ services:
       - "./presets.json:/config/ghb/presets.json:rw"
       - "./config2:/config:rw"
       - "./output:/output:rw"
-      - "./video:/storage:ro"
+      - "./rips:/storage:ro"
       - "./watch2:/watch:rw"
     devices:
       - "/dev/dri/renderD128:/dev/dri/renderD128"
@@ -81,7 +81,7 @@ services:
       - "./presets.json:/config/ghb/presets.json:rw"
       - "./config3:/config:rw"
       - "./output:/output:rw"
-      - "./video:/storage:ro"
+      - "./rips:/storage:ro"
       - "./watch3:/watch:rw"
     devices:
       - "/dev/dri/renderD128:/dev/dri/renderD128"
@@ -113,7 +113,7 @@ services:
       - "./presets.json:/config/ghb/presets.json:rw"
       - "./config4:/config:rw"
       - "./output:/output:rw"
-      - "./video:/storage:ro"
+      - "./rips:/storage:ro"
       - "./watch4:/watch:rw"
     devices:
       - "/dev/dri/renderD128:/dev/dri/renderD128"

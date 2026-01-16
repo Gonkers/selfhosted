@@ -10,7 +10,7 @@ services:
       - traefik
     volumes:
       - "./config1:/config:rw"
-      - "./rips:/output:rw"
+      - "../handbrake/rips:/output:rw"
     devices:
       - "/dev/sr0:/dev/sr0"
       - "/dev/sg2:/dev/sg2"
@@ -34,7 +34,7 @@ services:
       - traefik
     volumes:
       - "./config2:/config:rw"
-      - "./rips:/output:rw"
+      - "../handbrake/rips:/output:rw"
     devices:
       - "/dev/sr1:/dev/sr1"
       - "/dev/sg3:/dev/sg3"

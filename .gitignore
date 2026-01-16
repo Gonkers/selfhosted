@@ -22,3 +22,20 @@ build/
 # Misc
 *.bak
 *.tmp
+
+# Application-specific ignores
+handbrake/config1/
+handbrake/config2/
+handbrake/config3/
+handbrake/config4/
+handbrake/output/
+handbrake/rips/
+handbrake/watch1/
+handbrake/watch2/
+handbrake/watch3/
+handbrake/watch4/
+jellyfin/cache/
+jellyfin/config/
+makemkv/config1/
+makemkv/config2/
+traefik/certs/
