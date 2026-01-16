@@ -1,0 +1,29 @@
+services:
+  tinymediamanager:
+    image: docker.io/tinymediamanager/tinymediamanager:latest
+    container_name: tinymediamanager
+    environment:
+      - USER_ID=950
+      - GROUP_ID=950
+      - TZ=America/New_York
+      - LC_ALL=en_US.UTF-8 # force UTF8
+      - LANG=en_US.UTF-8   # force UTF8
+    networks:
+      - traefik
+    volumes:
+      - ./addons:/app/addons:rw
+      - ./data:/data:rw
+      - ./media:/media:rw
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.tinymediamanager.rule=Host(`media.gonk.wtf`)"
+      - "traefik.http.routers.tinymediamanager.entrypoints=http,https"
+      - "traefik.http.routers.tinymediamanager.tls=true"
+      - "traefik.http.routers.tinymediamanager.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.tinymediamanager.tls.certresolver=cloudflare"
+      - "traefik.http.services.tinymediamanager.loadbalancer.server.port=4000"
+
+networks:
+  traefik:
+    external: true

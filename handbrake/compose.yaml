@@ -16,7 +16,7 @@ services:
     volumes:
       - "./presets.json:/config/ghb/presets.json:rw"
       - "./config1:/config:rw"
-      - "./output:/output:rw"
+      - "../tinymediamanager/media:/output:rw"
       - "./rips:/storage:ro"
       - "./watch1:/watch:rw"
     devices:
@@ -48,7 +48,7 @@ services:
     volumes:
       - "./presets.json:/config/ghb/presets.json:rw"
       - "./config2:/config:rw"
-      - "./output:/output:rw"
+      - "../tinymediamanager/media:/output:rw"
       - "./rips:/storage:ro"
       - "./watch2:/watch:rw"
     devices:
@@ -80,7 +80,7 @@ services:
     volumes:
       - "./presets.json:/config/ghb/presets.json:rw"
       - "./config3:/config:rw"
-      - "./output:/output:rw"
+      - "../tinymediamanager/media:/output:rw"
       - "./rips:/storage:ro"
       - "./watch3:/watch:rw"
     devices:
@@ -112,7 +112,7 @@ services:
     volumes:
       - "./presets.json:/config/ghb/presets.json:rw"
       - "./config4:/config:rw"
-      - "./output:/output:rw"
+      - "../tinymediamanager/media:/output:rw"
       - "./rips:/storage:ro"
       - "./watch4:/watch:rw"
     devices:
@@ -130,17 +130,3 @@ services:
 networks:
   traefik:
     external: true
-
-
-
-
-
-
-
-
-
-
-
-
-
-
