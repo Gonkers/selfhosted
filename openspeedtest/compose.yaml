@@ -1,0 +1,22 @@
+version: '3.3'
+services:
+    speedtest:
+      image: docker.io/openspeedtest/latest
+      container_name: openspeedtest
+      networks:
+        - traefik
+      restart: unless-stopped
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.openspeedtest.rule=Host(`speedtest.gonk.wtf`)"
+        - "traefik.http.routers.openspeedtest.entrypoints=http,https"
+        - "traefik.http.routers.openspeedtest.tls=true"
+        - "traefik.http.routers.openspeedtest.tls.domains[0].main=*.gonk.wtf"
+        - "traefik.http.routers.openspeedtest.tls.certresolver=cloudflare"
+        - "traefik.http.services.openspeedtest.loadbalancer.server.port=3000"
+        # fixes false readings for upload speed tests
+        - "traefik.http.middlewares.limit.buffering.maxRequestBodyBytes=10000000000"
+        - "traefik.http.routers.openspeedtest.middlewares=limit"
+networks:
+  traefik:
+    external: true
