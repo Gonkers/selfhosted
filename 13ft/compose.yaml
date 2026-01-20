@@ -1,0 +1,18 @@
+services:
+  13ft:
+    image: ghcr.io/wasi-master/13ft:latest
+    container_name: 13ft
+    networks:
+      - traefik
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.13ft.rule=Host(`paywall.gonk.wtf`)"
+      - "traefik.http.routers.13ft.entrypoints=http,https"
+      - "traefik.http.routers.13ft.tls=true"
+      - "traefik.http.routers.13ft.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.13ft.tls.certresolver=cloudflare"
+      - "traefik.http.services.13ft.loadbalancer.server.port=5000"
+networks:
+  traefik:
+    external: true

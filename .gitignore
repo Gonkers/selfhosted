@@ -24,6 +24,8 @@ build/
 *.tmp
 
 # Application-specific ignores
+freshrss/data/
+freshrss/extensions/
 handbrake/config1/
 handbrake/config2/
 handbrake/config3/

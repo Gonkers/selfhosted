@@ -1,0 +1,24 @@
+services:
+  freshrss:
+    image: docker.io/freshrss/freshrss
+    container_name: freshrss
+    environment:
+      - TZ=America/New_York
+      - CRON_MIN=1,31
+    networks:
+      - traefik
+    volumes:
+      - ./data:/var/www/FreshRSS/data:rw
+      - ./extensions:/var/www/FreshRSS/extensions:rw
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.freshrss.rule=Host(`news.gonk.wtf`)"
+      - "traefik.http.routers.freshrss.entrypoints=http,https"
+      - "traefik.http.routers.freshrss.tls=true"
+      - "traefik.http.routers.freshrss.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.freshrss.tls.certresolver=cloudflare"
+      - "traefik.http.services.freshrss.loadbalancer.server.port=80"
+networks:
+  traefik:
+    external: true
