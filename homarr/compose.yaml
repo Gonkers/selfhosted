@@ -1,0 +1,23 @@
+services:
+  homarr:
+    image: ghcr.io/homarr-labs/homarr:latest
+    container_name: homarr
+    environment:
+      - SECRET_ENCRYPTION_KEY=4183f13a15709165c289a80e6c7e4c6192ed89c19ac865d32bf0ea316bad6f09 # 
+    networks:
+      - traefik
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - ./data:/appdata
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homarr.rule=Host(`home.gonk.wtf`)"
+      - "traefik.http.routers.homarr.entrypoints=http,https"
+      - "traefik.http.routers.homarr.tls=true"
+      - "traefik.http.routers.homarr.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.homarr.tls.certresolver=cloudflare"
+      - "traefik.http.services.homarr.loadbalancer.server.port=7575"
+networks:
+  traefik:
+    external: true
