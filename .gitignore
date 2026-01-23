@@ -24,6 +24,7 @@ build/
 *.tmp
 
 # Application-specific ignores
+dockhand/data/
 freshrss/data/
 freshrss/extensions/
 handbrake/config1/

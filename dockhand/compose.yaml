@@ -1,0 +1,21 @@
+services:
+  dockhand:
+    image: docker.io/fnsys/dockhand:latest
+    container_name: dockhand
+    networks:
+      - traefik
+    volumes:
+      - ./data:/app/data:rw
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.dockhand.rule=Host(`dockhand.gonk.wtf`)"
+      - "traefik.http.routers.dockhand.entrypoints=http,https"
+      - "traefik.http.routers.dockhand.tls=true"
+      - "traefik.http.routers.dockhand.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.dockhand.tls.certresolver=cloudflare"
+      - "traefik.http.services.dockhand.loadbalancer.server.port=3000"
+networks:
+  traefik:
+    external: true
