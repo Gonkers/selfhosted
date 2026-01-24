@@ -1,4 +1,25 @@
 services:
+  tailscale:
+    image: docker.io/tailscale/tailscale:latest
+    hostname: tailscale
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - TS_EXTRA_ARGS=--advertise-tags=tag:container
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    networks:
+      public:
+        ipv4_address: 172.23.4.42
+      traefik:
+    volumes:
+      - ./tailscale/state:/var/lib/tailscale
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    restart: unless-stopped
+
+
   traefik:
     image: docker.io/library/traefik:v3
     container_name: traefik
@@ -8,10 +29,7 @@ services:
       - ./certs/:/var/traefik/certs/:rw
     environment:
       - CF_DNS_API_TOKEN=${CF_DNS_API_TOKEN}
-    networks:
-      public:
-        ipv4_address: 172.23.4.42
-      traefik:
+    network_mode: service:tailscale
     restart: unless-stopped
 
 networks:

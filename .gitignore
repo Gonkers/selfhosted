@@ -36,6 +36,7 @@ handbrake/watch1/
 handbrake/watch2/
 handbrake/watch3/
 handbrake/watch4/
+homarr/data/
 jellyfin/cache/
 jellyfin/config/
 makemkv/config1/
@@ -44,3 +45,4 @@ tinymediamanager/addons/
 tinymediamanager/data/
 tinymediamanager/media/
 traefik/certs/
+traefik/tailscale/state/

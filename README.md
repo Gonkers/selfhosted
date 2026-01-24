@@ -37,11 +37,12 @@ docker network create traefik
 
    ![TrueNAS Apps YAML Install](docs/img/truenas_apps_yaml_install.png)
 
-## Traefik
+## Traefik && Tailscale
 Docker compose will automatically read in `.env` files for variable substitution. Once this
 repo is cloned onto the server, create a `.env` file with your Cloudflare API key.
 ```shell
 echo "CF_DNS_API_TOKEN=[... TOKEN GOES HERE ...]" > ./traefik/.env
+echo "TS_AUTHKEY=[... TOKEN GOES HERE ...]" > ./traefik/.env
 ```
 
 Also make sure to update the Traefik static [config file here](./traefik/config.yaml).
