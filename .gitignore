@@ -24,6 +24,7 @@ build/
 *.tmp
 
 # Application-specific ignores
+adguard-home/data/
 dockhand/data/
 freshrss/data/
 freshrss/extensions/
