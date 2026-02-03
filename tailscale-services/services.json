@@ -1,0 +1,10 @@
+{
+  "version": "0.0.1",
+  "services": {
+    "svc:movies": {
+      "endpoints": {
+        "tcp:443": "https://jellyfin.gonk.wtf:443"
+      }
+    }
+  }
+}

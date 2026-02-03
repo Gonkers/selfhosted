@@ -24,26 +24,13 @@ build/
 *.tmp
 
 # Application-specific ignores
-adguard-home/data/
-dockhand/data/
-freshrss/data/
+*/data/
+*/config/
+*/config?/
+*/cache/
 freshrss/extensions/
-handbrake/config1/
-handbrake/config2/
-handbrake/config3/
-handbrake/config4/
 handbrake/rips/
-handbrake/watch1/
-handbrake/watch2/
-handbrake/watch3/
-handbrake/watch4/
-homarr/data/
-jellyfin/cache/
-jellyfin/config/
-makemkv/config1/
-makemkv/config2/
+handbrake/watch?/
 tinymediamanager/addons/
-tinymediamanager/data/
 tinymediamanager/media/
 traefik/certs/
-traefik/tailscale/state/
