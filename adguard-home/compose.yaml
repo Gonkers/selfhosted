@@ -1,58 +1,36 @@
 services:
   adguard:
     image: docker.io/adguard/adguardhome:v0.107.71
-    ports:
-      # DNS
-      - 53:53/tcp
-      - 53:53/udp
-
-      # DHCP
-      # - 67:67/udp
-      # - 68:68/udp
-
-      # DNS-over-HTTPS
-      - 80:80/tcp
-      - 443:443/tcp
-      - 443:443/udp
-
-      # Admin Panel
-      - 3000:3000/tcp
-
-      # DNS-over-TLS
-      - 853:853/tcp
-      # DNS-over-QUIC
-      - 853:853/udp
-
-      # DNSCrypt
-      - 5443:5443/tcp
-      - 5443:5443/udp
-
-      # Debugging profiles
-      - 6060:6060/tcp
     networks:
-      - dns
+      dns:
+      public:
+        ipv4_address: 172.23.4.53
     volumes:
       - ./data:/opt/adguardhome/work
       - ./conf:/opt/adguardhome/conf
-
     restart: unless-stopped
-
     depends_on:
       - unbound
 
   unbound:
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: unbound
-    image: docker.io/mvance/unbound:1.22.0
     expose:
-      - "53"
+      - "53/tcp"
+      - "53/udp"
     networks:
-      - dns
-    # ports:
-    #   - "53:53/tcp"
-    #   - "53:53/udp"
+      dns:
+        ipv4_address: 10.53.0.2
     volumes:
-      - "./unbound.conf:/opt/unbound/etc/unbound/unbound.conf"
+      - ./unbound.conf:/usr/local/etc/unbound/unbound.conf:ro
     restart: unless-stopped
 
 networks:
   dns:
+    ipam:
+      config:
+        - subnet: 10.53.0.0/24
+  public:
+    external: true
