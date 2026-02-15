@@ -1,7 +1,14 @@
-FROM debian:bookworm-slim AS builder
+# docker build --target=unbound-builder --tag unbound-builder:latest .
+# docker build --target=adguard-builder --tag adguard-builder:latest .
+# docker build --tag adguard-home:latest .
+
+ARG PLATFORM=linux/amd64
+# linux/arm64/v8
+
+FROM --platform=${PLATFORM} debian:bookworm-slim AS unbound-builder
 ARG UNBOUND_VERSION=1.24.2
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install --yes \
     bison \
     build-essential \
     flex \
@@ -13,28 +20,36 @@ RUN apt-get update && apt-get install -y \
     libsodium-dev \
     libssl-dev \
     protobuf-c-compiler \
-    wget \
- && rm -rf /var/lib/apt/lists/*
+    wget
 
 WORKDIR /src
 RUN wget -O unbound.tar.gz https://github.com/NLnetLabs/unbound/archive/refs/tags/release-${UNBOUND_VERSION}.tar.gz \
  && tar -xvf unbound.tar.gz --strip-components=1 \
- && ./configure \
-        --prefix=/usr/local \
-        --with-libevent \
-        --with-pthreads \
-        --enable-subnet \
-        --enable-dnstap \
-        --enable-dnscrypt \
-        --enable-cachedb \
+ && ./configure --prefix=/usr/local --with-libevent --with-pthreads --enable-subnet \
  && make \
- && make install DESTDIR=/install \
- && sed -i 's/^\s*#\s*use-syslog:\s*yes/use-syslog: no/' /install/usr/local/etc/unbound/unbound.conf \
- && sed -i 's/^\s*#\s*chroot:.*/chroot: ""/' /install/usr/local/etc/unbound/unbound.conf
+ && make install DESTDIR=/install
 
-FROM debian:bookworm-slim
+WORKDIR /install
 
-# Install runtime dependencies
+
+FROM --platform=${PLATFORM} golang:1-bookworm AS adguard-builder
+ARG ADGUARD_VERSION=0.107.71
+
+RUN curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
+RUN apt-get update && apt-get install --yes build-essential nodejs
+
+WORKDIR /src
+RUN git clone --depth 1 --branch v${ADGUARD_VERSION} https://github.com/AdguardTeam/AdGuardHome.git .
+RUN make VERSION=v${ADGUARD_VERSION}
+RUN mkdir -p /install/opt/adguardhome/conf /install/opt/adguardhome/work \
+ && mv ./AdGuardHome /install/opt/adguardhome/ \
+ && chown -R nobody: /install
+
+WORKDIR /install
+
+
+FROM --platform=${PLATFORM} debian:bookworm-slim
+
 RUN apt-get update && apt-get install -y \
     libssl3 \
     libexpat1 \
@@ -44,16 +59,29 @@ RUN apt-get update && apt-get install -y \
     libsodium23 \
     libhiredis0.14 \
     ca-certificates \
+ && apt-get autoremove -y && apt-get clean -y \
  && rm -rf /var/lib/apt/lists/*
 
-COPY --from=builder /install/usr/local /usr/local
+COPY --from=unbound-builder /install/usr/local /usr/local
+COPY unbound.conf /usr/local/etc/unbound/unbound.conf
+COPY --from=adguard-builder /install/opt/adguardhome /opt/adguardhome
+COPY ./conf/AdGuardHome.yaml /opt/adguardhome/conf/AdGuardHome.yaml
+COPY --chmod=0755 entrypoint.sh /entrypoint.sh
+RUN useradd -r -s /bin/false dns_service \
+ && chown -R dns_service:dns_service /usr/local/etc/unbound \
+ && chown -R dns_service:dns_service /opt/adguardhome
 
-RUN useradd -r -s /bin/false unbound \
- && chown -R unbound:unbound /usr/local/etc/unbound
+EXPOSE 53/tcp 53/udp \
+        67/udp \
+        68/udp \
+        80/tcp \
+        443/tcp 443/udp \
+        853/tcp 853/udp \
+        3000/tcp 3000/udp \
+        5443/tcp 5443/udp \
+        6060/tcp
 
-EXPOSE 53/tcp 53/udp
+USER dns_service
 
-USER unbound
-
-ENTRYPOINT ["/usr/local/sbin/unbound"]
-CMD ["-d", "-v", "-c", "/usr/local/etc/unbound/unbound.conf"]
+WORKDIR /opt/adguardhome/work
+ENTRYPOINT ["/entrypoint.sh"]

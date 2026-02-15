@@ -1,36 +1,21 @@
 services:
   adguard:
-    image: docker.io/adguard/adguardhome:v0.107.71
-    networks:
-      dns:
-      public:
-        ipv4_address: 172.23.4.53
-    volumes:
-      - ./data:/opt/adguardhome/work
-      - ./conf:/opt/adguardhome/conf
-    restart: unless-stopped
-    depends_on:
-      - unbound
-
-  unbound:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: unbound
-    expose:
-      - "53/tcp"
-      - "53/udp"
+      network: host
+    container_name: adguard
     networks:
-      dns:
-        ipv4_address: 10.53.0.2
-    volumes:
-      - ./unbound.conf:/usr/local/etc/unbound/unbound.conf:ro
+      vlan:
+        ipv4_address: 172.23.0.53
     restart: unless-stopped
 
 networks:
-  dns:
+  vlan:
+    driver: macvlan
+    # driver_opts:
+    #   parent: enp3s0.0
     ipam:
       config:
-        - subnet: 10.53.0.0/24
-  public:
-    external: true
+        - subnet: 172.23.0.0/16
+          gateway: 172.23.0.1
