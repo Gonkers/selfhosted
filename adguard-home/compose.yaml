@@ -5,17 +5,8 @@ services:
       dockerfile: Dockerfile
       network: host
     container_name: adguard
-    networks:
-      vlan:
-        ipv4_address: 172.23.0.53
+    network_mode: host
     restart: unless-stopped
 
-networks:
-  vlan:
-    driver: macvlan
-    # driver_opts:
-    #   parent: enp3s0.0
-    ipam:
-      config:
-        - subnet: 172.23.0.0/16
-          gateway: 172.23.0.1
+
+# sudo nsenter -t $(docker inspect -f '{{.State.Pid}}' adguard) -n
