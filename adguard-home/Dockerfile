@@ -1,7 +1,3 @@
-# docker build --target=unbound-builder --tag unbound-builder:latest .
-# docker build --target=adguard-builder --tag adguard-builder:latest .
-# docker build --tag adguard-home:latest .
-
 ARG PLATFORM=linux/amd64
 # linux/arm64/v8
 

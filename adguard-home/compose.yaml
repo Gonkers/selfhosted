@@ -22,6 +22,3 @@ services:
       # - 5443:5443/udp # HTTPS alternative
       - 6060:6060/tcp # Metrics
     restart: unless-stopped
-
-
-# sudo nsenter -t $(docker inspect -f '{{.State.Pid}}' adguard) -n
