@@ -16,8 +16,10 @@ services:
 
 networks:
 
+  traefik:
+    name: traefik
+    driver: bridge
+
   public:
     external: true
 
-  traefik:
-    external: true

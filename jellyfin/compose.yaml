@@ -16,7 +16,7 @@ services:
       - JELLYFIN_PublishedServerUrl=https://jellyfin.gonk.wtf
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.jellyfin.rule=Host(`jellyfin.gonk.wtf`)"
+      - "traefik.http.routers.jellyfin.rule=HostRegexp(`(?:jf|jellyfin)\\.gonk\\.wtf`)"
       - "traefik.http.routers.jellyfin.entrypoints=http,https"
       - "traefik.http.routers.jellyfin.tls=true"
       - "traefik.http.routers.jellyfin.tls.domains[0].main=*.gonk.wtf"
