@@ -1,10 +1,39 @@
 services:
+
+  ts-jellyfin:
+    image: tailscale/tailscale:latest
+    container_name: ts-jellyfin
+    hostname: jellyfin
+    networks:
+      - traefik
+    environment:
+      - TS_AUTHKEY=${TS_AUTHKEY}
+      - "TS_EXTRA_ARGS=--advertise-tags=tag:container --reset"
+      - TS_SERVE_CONFIG=/config/jellyfin.json
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_USERSPACE=false
+    volumes:
+      - ./state:/var/lib/tailscale
+      - ./tsconfig.json:/config/jellyfin.json
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin.rule=HostRegexp(`(?:jf|jellyfin)\\.gonk\\.wtf`)"
+      - "traefik.http.routers.jellyfin.entrypoints=http,https"
+      - "traefik.http.routers.jellyfin.tls=true"
+      - "traefik.http.routers.jellyfin.tls.domains[0].main=*.gonk.wtf"
+      - "traefik.http.routers.jellyfin.tls.certresolver=cloudflare"
+      - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+
   jellyfin:
     image: docker.io/jellyfin/jellyfin
     container_name: jellyfin
     user: 950:950
-    networks:
-      - traefik
+    network_mode: service:ts-jellyfin
     volumes:
       - ./config:/config:rw
       - ./cache:/cache:rw
@@ -14,14 +43,9 @@ services:
     restart: 'unless-stopped'
     environment:
       - JELLYFIN_PublishedServerUrl=https://jellyfin.gonk.wtf
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.jellyfin.rule=HostRegexp(`(?:jf|jellyfin)\\.gonk\\.wtf`)"
-      - "traefik.http.routers.jellyfin.entrypoints=http,https"
-      - "traefik.http.routers.jellyfin.tls=true"
-      - "traefik.http.routers.jellyfin.tls.domains[0].main=*.gonk.wtf"
-      - "traefik.http.routers.jellyfin.tls.certresolver=cloudflare"
-      - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+    depends_on:
+      - ts-jellyfin
+
 networks:
   traefik:
     external: true
