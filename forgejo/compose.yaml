@@ -1,12 +1,3 @@
-configs:
-  ts-serve:
-    content: |
-      {"TCP":{"443":{"HTTPS":true}},
-      "Web":{"$${TS_CERT_DOMAIN}:443":
-          {"Handlers":{"/":
-          {"Proxy":"http://127.0.0.1:3000"}}}},
-      "AllowFunnel":{"$${TS_CERT_DOMAIN}:443":false}}
-
 secrets:
   env:
     file: .env
@@ -15,23 +6,20 @@ services:
   tailscale:
     image: tailscale/tailscale:latest
     container_name: ts-forgejo
-    hostname: git
-    entrypoint: ["/bin/sh", "-ec", "set -a; . /run/secrets/env; set +a; exec containerboot"]
+    hostname: forgejo
+    entrypoint: ["/bin/sh", "/tailscale-entrypoint.sh"]
     environment:
       - "TS_EXTRA_ARGS=--advertise-tags=tag:container --reset"
       - TS_STATE_DIR=/var/lib/tailscale
-      - TS_SERVE_CONFIG=/config/forgejo.json
       - TS_USERSPACE=false
       - TS_ENABLE_HEALTH_CHECK=true
       - TS_LOCAL_ADDR_PORT=127.0.0.1:41234
       - TS_ACCEPT_DNS=true
       - TS_AUTH_ONCE=true
-    configs:
-      - source: ts-serve
-        target: /config/forgejo.json
     secrets:
       - env
     volumes:
+      - ./tailscale-entrypoint.sh:/tailscale-entrypoint.sh:ro
       - ./state:/var/lib/tailscale
     devices:
       - /dev/net/tun:/dev/net/tun
