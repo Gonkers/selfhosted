@@ -16,10 +16,7 @@ services:
     image: tailscale/tailscale:latest
     container_name: ts-forgejo
     hostname: git
-    entrypoint: ["/bin/sh", "-ec"]
-    command: |
-      source /run/secrets/env
-      exec containerboot
+    entrypoint: ["/bin/sh", "-ec", "set -a; . /run/secrets/env; set +a; exec containerboot"]
     environment:
       - "TS_EXTRA_ARGS=--advertise-tags=tag:container --reset"
       - TS_STATE_DIR=/var/lib/tailscale
