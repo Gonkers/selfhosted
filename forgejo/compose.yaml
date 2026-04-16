@@ -48,7 +48,7 @@ services:
     restart: unless-stopped
 
   forgejo:
-    image: codeberg.org/forgejo/forgejo:14
+    image: codeberg.org/forgejo/forgejo:14-rootless
     container_name: forgejo
     user: 950:950
     network_mode: service:tailscale
@@ -57,7 +57,9 @@ services:
       - USER_GID=950
       - TZ=Etc/UTC
     volumes:
-      - ./data/data:/data:rw
+      - ./data:/var/lib/gitea:rw
+      - ./config:/etc/gitea:rw
+
     depends_on:
       tailscale:
         condition: service_healthy

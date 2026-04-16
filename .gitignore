@@ -28,6 +28,7 @@ build/
 */config/
 */config?/
 */cache/
+*/state/
 freshrss/extensions/
 handbrake/rips/
 handbrake/watch?/
