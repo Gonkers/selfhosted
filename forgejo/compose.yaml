@@ -1,0 +1,72 @@
+configs:
+  ts-serve:
+    content: |
+      {"TCP":{"443":{"HTTPS":true}},
+      "Web":{"$${TS_CERT_DOMAIN}:443":
+          {"Handlers":{"/":
+          {"Proxy":"http://127.0.0.1:3000"}}}},
+      "AllowFunnel":{"$${TS_CERT_DOMAIN}:443":false}}
+
+secrets:
+  env:
+    file: .env
+
+services:
+  tailscale:
+    image: tailscale/tailscale:latest
+    container_name: ts-forgejo
+    hostname: git
+    entrypoint: ["/bin/sh", "-ec"]
+    command: |
+      source /run/secrets/env
+      exec containerboot
+    environment:
+      - TS_STATE_DIR=/var/lib/tailscale
+      - TS_SERVE_CONFIG=/config/forgejo.json
+      - TS_USERSPACE=false
+      - TS_ENABLE_HEALTH_CHECK=true
+      - TS_LOCAL_ADDR_PORT=127.0.0.1:41234
+      - TS_ACCEPT_DNS=true
+      - TS_AUTH_ONCE=true
+    configs:
+      - source: ts-serve
+        target: /config/forgejo.json
+    secrets:
+      - env
+    volumes:
+      - ./state:/var/lib/tailscale
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    cap_add:
+      - net_admin
+    #ports:
+    #  - 0.0.0.0:${SERVICEPORT}:${SERVICEPORT} # Binding port to the local network - may be removed if only exposure to your Tailnet is required
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://127.0.0.1:41234/healthz"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped
+
+  forgejo:
+    image: codeberg.org/forgejo/forgejo:12
+    container_name: forgejo
+    user: 950:950
+    network_mode: service:tailscale
+    environment:
+      - USER_UID=950
+      - USER_GID=950
+      - TZ=Etc/UTC
+    volumes:
+      - ./data/data:/data:rw
+    depends_on:
+      tailscale:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --spider -q http://127.0.0.1:3000/ || exit 1"]
+      interval: 1m
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped
